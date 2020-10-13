@@ -75,13 +75,16 @@ void Pos_Trans::output_pnp(int flag) {
     char text1[50], text2[50];
     //output
     ofstream file;
-    file.open("output.txt");
-    if(flag==-1)
-    for(int i=0;i < numofphoto;++i){
-        sprintf(text1,"The R in %d.jpg is\n",i);
-        sprintf(text2,"\nThe tvec in %d.jpg is\n",i);
-        file<<text1<<pnp_rmatrics[i]<<text2<<pnp_tvecs[i]<<endl;
+    if(flag==-1) {
+        file.open("output.txt");
 
+        for (int i = 0; i < numofphoto; ++i) {
+            sprintf(text1, "The R in %d.jpg is\n", i);
+            sprintf(text2, "\nThe tvec in %d.jpg is\n", i);
+            file << text1 << pnp_rmatrics[i] << text2 << pnp_tvecs[i] << endl;
+
+        }    
+        file.close();
     }
     else if(flag>=0&&flag<numofphoto) {
         sprintf(text1, "The R in %d.jpg is\n", flag);
@@ -89,7 +92,6 @@ void Pos_Trans::output_pnp(int flag) {
         cout << text1 << pnp_rmatrics[0] << text2 << pnp_tvecs[flag] << endl;
     }
     else cerr<<"Over the range!";
-    file.close();
 }
 vector<Point2f> Pos_Trans::I2C(const vector<Point2f>&ip)
 {
