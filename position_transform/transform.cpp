@@ -117,7 +117,7 @@ void Pos_Trans::triangle_evalation()
         tri_objectpoints.col(i)/=tri_objectpoints.at<float>(3,i);//w to 1
     ofstream file;
     file.open("tri_output.txt");
-
+    transpose(tri_objectpoints,tri_objectpoints);//转置一下好看点
     file<<"The Point Matrix(4*N) is\n"<<tri_objectpoints<<endl;
     file<<"Suppose:\n"<<objectpoints[0]<<endl;
     file.close();
