@@ -29,6 +29,6 @@
  ### opencv中矩阵的一些用法
  - copyTo(M(Rect)) 类似于MatLab和python中M[x0:x1,y0:y1]的做法,可以取矩阵中某一ROI的引用，从而使用矩阵区域的整体复制
  - M.row(i)和M.col(i)可以调用矩阵行列向量的引用，比ROI要快捷一点
- - M.at<T>(i,j)可以访问矩阵中某处值，实际上是引用，这也是进行矩阵元素访问的一种快捷方法，中间的模板类型要对应图像矩阵类型详见https://blog.csdn.net/Young__Fan/article/details/81866237
+ - M.at\<T\>(i,j)可以访问矩阵中某处值，实际上是引用，这也是进行矩阵元素访问的一种快捷方法，中间的模板类型要对应图像矩阵类型详见https://blog.csdn.net/Young__Fan/article/details/81866237
  - hconcat和vconcat可以实现矩阵拼接，h是横向，v是纵向
 
