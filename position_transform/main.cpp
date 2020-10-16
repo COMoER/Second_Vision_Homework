@@ -24,7 +24,7 @@ int main()
     Pos_Trans c(17,41,6,9,1280,720);
     c.getCoef();
     c.pnp();
-    c.output_pnp(1);
+    c.output_pnp(-1);
     c.triangle_evalation();
     return 0;
 }

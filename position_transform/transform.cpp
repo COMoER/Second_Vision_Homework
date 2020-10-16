@@ -50,14 +50,14 @@ double Pos_Trans::getCoef() {
             for (int j = 1; j <= boardsize.width; ++j)
                 objectpoints[no].push_back(Point3f(width * j, width * i, 0));
     }
-    return calibrateCamera(objectpoints, cornersvec, wholesize, cameraMatrix, DistMatrix, rvecs,
-                           tvecs, in_coef, out_coef, err,CALIB_FIX_PRINCIPAL_POINT);
+    return calibrateCamera(objectpoints, cornersvec, wholesize, cameraMatrix, DistCoeffs, rvecs,
+                               tvecs, in_coef, out_coef, err, CALIB_FIX_PRINCIPAL_POINT);
 }
 
 vector<Point2f> Pos_Trans::getimgposition(const vector<Point3f> &real,int i)
 {
     vector<Point2f> img;
-    projectPoints(real,rvecs[i],tvecs[i],cameraMatrix,DistMatrix,img);
+    projectPoints(real,rvecs[i],tvecs[i],cameraMatrix,DistCoeffs,img);
     return img;
 }
 void Pos_Trans::pnp() {
@@ -66,7 +66,7 @@ void Pos_Trans::pnp() {
         pnp_rmatrics.push_back(Mat());
         pnp_tvecs.push_back(Mat());
         //r_{w->c} t_{w->c}
-        solvePnP(objectpoints[i], cornersvec[i], cameraMatrix, DistMatrix,
+        solvePnP(objectpoints[i], cornersvec[i], cameraMatrix, DistCoeffs,
                  pnp_rmatrics[i], pnp_tvecs[i]);
         Rodrigues(pnp_rmatrics[i],pnp_rmatrics[i]); //Rvec2Rmatrix
     }
@@ -83,7 +83,7 @@ void Pos_Trans::output_pnp(int flag) {
             sprintf(text2, "\nThe tvec in %d.jpg is\n", i);
             file << text1 << pnp_rmatrics[i] << text2 << pnp_tvecs[i] << endl;
 
-        }    
+        }
         file.close();
     }
     else if(flag>=0&&flag<numofphoto) {
@@ -92,36 +92,28 @@ void Pos_Trans::output_pnp(int flag) {
         cout << text1 << pnp_rmatrics[0] << text2 << pnp_tvecs[flag] << endl;
     }
     else cerr<<"Over the range!";
+
 }
 vector<Point2f> Pos_Trans::I2C(const vector<Point2f>&ip)
 {
     vector<Point2f> cp;
-    for(int i=0;i<ip.size();++i) {
-        Point3d A(ip[i].x,ip[i].y,1.0);
-
-        Mat B=cameraMatrix.inv()*Mat(A);//K^(-1)*A
-        Point3f C(B);
-        cp.push_back(Point2f(C.x,C.y));
-    }
-
+    undistortPoints(ip,cp,cameraMatrix,DistCoeffs);//Requiring normalized position
     return cp;
 }
 void Pos_Trans::triangle_evalation()
 {
-    //according to the first and the second photo as a double-perspective camera
-    Mat r_1(3,4,5),r_2(3,4,5);//enum{CV_32F:5}
+    Mat r_1(3,4,CV_32F),r_2(3,4,CV_32F);
     //3*4 [R,t]
     hconcat(pnp_rmatrics[0],pnp_tvecs[0],r_1);
     hconcat(pnp_rmatrics[1],pnp_tvecs[1],r_2);
-    I2C(cornersvec[0]);
     triangulatePoints(r_1,r_2,I2C(cornersvec[0]),I2C(cornersvec[1]),tri_objectpoints);
     for(int i=0;i<tri_objectpoints.cols;++i)
-        tri_objectpoints.col(i)/=tri_objectpoints.at<float>(3,i);//w to 1
+        tri_objectpoints.col(i)/=tri_objectpoints.at<float>(3,i);//regularize the w to 1
     ofstream file;
     file.open("tri_output.txt");
-    transpose(tri_objectpoints,tri_objectpoints);//转置一下好看点
-    file<<"The Point Matrix(4*N) is\n"<<tri_objectpoints<<endl;
-    file<<"Suppose:\n"<<objectpoints[0]<<endl;
+    transpose(tri_objectpoints,tri_objectpoints);
+    for(int i=0;i<tri_objectpoints.rows;++i)
+        file<<"The Evaluate Point is"<<tri_objectpoints.row(i)<<"\tSuppose:"<<objectpoints[0][i]<<endl;
     file.close();
 
 }

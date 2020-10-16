@@ -25,7 +25,7 @@ private:
 
 public:
     Mat cameraMatrix;//camera inner coef
-    Mat DistMatrix;//jibian
+    Mat DistCoeffs;//jibian
     vector<Mat> rvecs;//R
     vector<Mat> tvecs;//T
 
