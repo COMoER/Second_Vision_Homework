@@ -21,7 +21,7 @@
  - 输入参数：
  - projmatrix1 这个是相机1的位姿（网上用的这个说法，其实就是[R,t],一个3*4矩阵）
  - projmatrix2 相机2的位姿
- - projpoints1 这里要相机1坐标系中坐标，不能用像素坐标系中坐标，需要转换，K^-1 *(u,v,1)^T,这里没考虑畸变系数
+ - projpoints1 这里要相机1坐标系中坐标，不能用像素坐标系中坐标，需要转换，用undistortPoints，具体用法这篇博客讲得贼清楚https://blog.csdn.net/jonathanzh/article/details/104418758?utm_medium=distribute.pc_relevant.none-task-blog-title-5&spm=1001.2101.3001.4242
  - projpoints2 同1
  - 输出参数：
  - point4D 其实opencv没有Point4d这个类型，所以找一个Mat放一下就好了
