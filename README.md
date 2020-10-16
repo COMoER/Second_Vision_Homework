@@ -1,7 +1,7 @@
 # 第二次视觉部作业
 ## 第一题矩阵公式
 
-![](https://latex.codecogs.com/svg.latex?P_r%20=%20R_{ir}^TR_{ci}^T(K^{-1}(ud,vd,d)^T-t_{ci}))
+![](https://latex.codecogs.com/svg.latex?P_r%20=%20R_{ir}^T(R_{ci}^TK^{-1}d(u,v,1)^T-t_{ci}))
 ## 第二题
 ### 结果放在output.txt
 ### 这里用到的函数是solvePnP，它的参数为
