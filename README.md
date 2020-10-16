@@ -16,12 +16,12 @@
 - 输出的旋转向量可用Rodrigues(src,dst)函数转换为旋转矩阵
   
 ## 第三题
-### 结果放在tri_output.txt，上面存放了一个54*4的矩阵的输出，每一行的前三个是三角测量给定的世界坐标，下面是对照的假定的世界坐标
+### 结果放在tri_output.txt，每一行是三角测量出的世界坐标和原先假定的世界坐标
 ### 这里用到了函数triregulatePoints函数，这个函数使用比较有讲究
  - 输入参数：
  - projmatrix1 这个是相机1的位姿（网上用的这个说法，其实就是[R,t],一个3*4矩阵）
  - projmatrix2 相机2的位姿
- - projpoints1 这里要相机1坐标系中坐标，不能用像素坐标系中坐标，需要转换，用undistortPoints，具体用法这篇博客讲得贼清楚https://blog.csdn.net/jonathanzh/article/details/104418758?utm_medium=distribute.pc_relevant.none-task-blog-title-5&spm=1001.2101.3001.4242
+ - projpoints1 这里要相机1坐标系中坐标，不能用像素坐标系中坐标，需要转换，用undistortPoints(src,dst,cameraMatrix,DistCoeffs,R,P),P若设置为内参为实际纠正后的像素坐标，而对于三角测量来说需要的二维坐标是归一化后坐标的前两位，所以P应用默认参数（noArray）
  - projpoints2 同1
  - 输出参数：
  - point4D 其实opencv没有Point4d这个类型，所以找一个Mat放一下就好了
