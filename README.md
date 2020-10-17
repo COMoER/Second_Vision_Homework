@@ -31,4 +31,17 @@
  - M.row(i)和M.col(i)可以调用矩阵行列向量的引用，比ROI要快捷一点
  - M.at\<T\>(i,j)可以访问矩阵中某处值，实际上是引用，这也是进行矩阵元素访问的一种快捷方法，中间的模板类型要对应图像矩阵类型详见https://blog.csdn.net/Young__Fan/article/details/81866237
  - hconcat和vconcat可以实现矩阵拼接，h是横向，v是纵向
-
+## 第四题
+### 输出的视频好像传不到github上，我上传到了jbox上（统一帧率30.0fps,所以看不出来快慢，其实CSRT超慢）
+- KCF https://jbox.sjtu.edu.cn/l/XH2KGE
+- MOSSE https://jbox.sjtu.edu.cn/l/DuUp4E
+- CSRT https://jbox.sjtu.edu.cn/l/toTOcA
+### 程序的输出放在output.log中
+### 关于程序写的过程一些感想和对三种算法的性能分析
+- opencv里面通过智能指针模板类Ptr完成tracker的创建(tracker::create(),相当于new)，可以自动释放内存
+- 这里通过switch来创建不同的tracker对象，所以我通过继承和多态性来实现，可以避免在switch语块内创建对象结果用不到外面
+- 上面的抽象类指针尝试用了一下opencv的Ptr类，感觉良好，这样不会忘记delete了
+- 在重新选择ROI后，需要重建tracker对象（这里不知道重建后原来的对象会不会自动释放掉）
+- KCF算法：这个算法很快，但是不太能够自适应缩放，而且在远处很容易失效或者框不到对象
+- MOSSE算法：同样也蛮快的，但是不能很好地适应转动，一转动整个框就偏离了，可能是这个算法对于物体的运动很敏感（这也是一个优点，在远处可以蛮好地跟随车），可以看到它甚至把那个老哥的运动给捕捉了（跟着那老哥走了）
+- CSRT算法：这个超慢，在远处的效果也不好，但是自适应缩放很强，可以看到我最后选框选小了但是它最后很好地适应了放大后的车
